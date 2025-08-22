@@ -7,6 +7,10 @@ import os
 import matplotlib.font_manager as fm
 import matplotlib.image as mpimg
 
+font_path = "IPAexGothic.ttf"  # プロジェクトに置いたフォント
+jp_font = fm.FontProperties(fname=font_path)
+plt.rcParams['font.family'] = jp_font.get_name()
+
 DATA_DIR = "data"
 
 # Windows用フォント設定
