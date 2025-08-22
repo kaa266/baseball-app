@@ -10,7 +10,7 @@ import matplotlib.image as mpimg
 
 DATA_DIR = "data"
 
-def show_analysis():
+def show_analysis(DATA_DIR):
     pitcher_files = [f for f in os.listdir(DATA_DIR) if f.endswith(".csv")]
 
     if os.name == 'nt':  # Windows
