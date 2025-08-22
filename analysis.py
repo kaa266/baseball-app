@@ -11,21 +11,22 @@ import matplotlib.image as mpimg
 
 DATA_DIR = "data"
 
+# Windowsの場合のフォント設定
+if os.name == 'nt':
+    font_path = "C:/Windows/Fonts/meiryo.ttc"
+    if os.path.exists(font_path):
+        font_prop = fm.FontProperties(fname=font_path)
+        font_name = font_prop.get_name()
+    else:
+        font_name = "MS Gothic"
+else:
+    font_name = "Hiragino Maru Gothic Pro"  # macOS
+
+plt.rcParams['font.family'] = font_name
+
 def show_analysis(DATA_DIR):
     pitcher_files = [f for f in os.listdir(DATA_DIR) if f.endswith(".csv")]
 
-    # フォント設定（Windows / mac / Linux）
-    if os.name == 'nt':  # Windows
-        # 直接フォントファイルのパスを指定
-        font_path = "C:/Windows/Fonts/meiryo.ttc"  # ← Windows標準のMeiryo
-        if os.path.exists(font_path):
-            font_prop = fm.FontProperties(fname=font_path)
-            plt.rcParams['font.family'] = font_prop.get_name()
-        else:
-            plt.rcParams['font.family'] = "MS Gothic"
-    else:  # macOSやLinux
-        plt.rcParams['font.family'] = "Hiragino Maru Gothic Pro"  # macOS
-        # plt.rcParams['font.family'] = "Noto Sans CJK JP"  # Linuxの場合はこ
     
     if not pitcher_files:
         st.warning("データがありません。先に投球データを入力してください。")
