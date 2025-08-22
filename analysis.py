@@ -9,21 +9,6 @@ import matplotlib.image as mpimg
 import platform
 
 # -------------------------
-# フォント設定（環境依存）
-# -------------------------
-if platform.system() == "Windows":
-    font_path = "C:/Windows/Fonts/meiryo.ttc"
-    if os.path.exists(font_path):
-        jp_font = fm.FontProperties(fname=font_path)
-    else:
-        jp_font = fm.FontProperties(family="MS Gothic")
-else:
-    # Linux（Streamlit Cloud）用
-    jp_font = fm.FontProperties(family="DejaVu Sans")
-
-plt.rcParams['font.family'] = jp_font.get_name()
-
-# -------------------------
 # 分析関数
 # -------------------------
 def show_analysis(DATA_DIR="data"):
@@ -33,6 +18,22 @@ def show_analysis(DATA_DIR="data"):
     if not pitcher_files:
         st.warning("データがありません。先に投球データを入力してください。")
         return
+    
+    # -------------------------
+# フォント設定（環境依存）
+# -------------------------
+    if platform.system() == "Windows":
+     font_path = "C:/Windows/Fonts/meiryo.ttc"
+    if os.path.exists(font_path):
+        jp_font = fm.FontProperties(fname=font_path)
+    else:
+        jp_font = fm.FontProperties(family="MS Gothic")
+    
+    # Linux（Streamlit Cloud）用
+    jp_font = fm.FontProperties(family="DejaVu Sans")
+
+    plt.rcParams['font.family'] = jp_font.get_name()
+
 
     # -------------------------
     # 円グラフ（Pitch Type Distribution）
