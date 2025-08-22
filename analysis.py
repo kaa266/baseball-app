@@ -13,22 +13,18 @@ DATA_DIR = "data"
 def show_analysis(DATA_DIR):
     pitcher_files = [f for f in os.listdir(DATA_DIR) if f.endswith(".csv")]
 
+    # フォント設定（Windows / mac / Linux）
     if os.name == 'nt':  # Windows
-        available_fonts = [f.name for f in fm.fontManager.ttflist]
-        if 'Yu Gothic' in available_fonts:
-            font_name = 'Yu Gothic'
-        elif 'Meiryo UI' in available_fonts:
-            font_name = 'Meiryo UI'
-        elif 'Meiryo' in available_fonts:
-            font_name = 'Meiryo'
+        # 直接フォントファイルのパスを指定
+        font_path = "C:/Windows/Fonts/meiryo.ttc"  # ← Windows標準のMeiryo
+        if os.path.exists(font_path):
+            font_prop = fm.FontProperties(fname=font_path)
+            plt.rcParams['font.family'] = font_prop.get_name()
         else:
-            font_name = 'MS Gothic'
+            plt.rcParams['font.family'] = "MS Gothic"
     else:  # macOSやLinux
-        font_name = 'Hiragino Maru Gothic Pro'  # macOS
-        # font_name = 'Noto Sans CJK JP'  # Linuxの場合はこちらに切り替え
-
-    # フォントをmatplotlibに適用
-    plt.rcParams['font.family'] = font_name
+        plt.rcParams['font.family'] = "Hiragino Maru Gothic Pro"  # macOS
+        # plt.rcParams['font.family'] = "Noto Sans CJK JP"  # Linuxの場合はこ
     
     if not pitcher_files:
         st.warning("データがありません。先に投球データを入力してください。")
