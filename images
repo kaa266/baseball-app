@@ -2,5 +2,5 @@ import os
 import matplotlib.image as mpimg
 
 # プロジェクト内の images フォルダにある画像を指定
-img_path = os.path.join("images", "istockphoto-165551036-612x612.png")
+img_path = os.path.join("images", "istockphoto-165551036-612x612.jpg")
 img = mpimg.imread(img_path)
