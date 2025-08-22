@@ -5,6 +5,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import os
 import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = 'Yu Gothic'
 import matplotlib.font_manager as fm 
 import matplotlib.image as mpimg
 
