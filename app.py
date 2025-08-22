@@ -8,7 +8,7 @@ st.set_page_config(page_title="野球分析アプリ", layout="wide")
 st.markdown("# ⚾ 野球分析アプリ")
 
 # 保存先ディレクトリ
-DATA_DIR = "C:/Users/kazuk/OneDrive/ドキュメント/baseball-app/data"
+DATA_DIR = "data"
 os.makedirs(DATA_DIR, exist_ok=True)
 
 # タブUIでページ切り替え
@@ -23,7 +23,7 @@ with tab1:
      show_input_form(DATA_DIR)  # ← ここが重要！
 
 with tab2:
-    show_analysis()    # ← analysis側も引数取るならここも必要
+    show_analysis(DATA_DIR)    # ← analysis側も引数取るならここも必要
 
 
 
