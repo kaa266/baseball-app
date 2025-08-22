@@ -7,17 +7,16 @@ import os
 import matplotlib.font_manager as fm
 import matplotlib.image as mpimg
 
-# フォント設定
-if os.name == 'nt':  # Windows
-    font_path = "C:/Windows/Fonts/meiryo.ttc"
-    if os.path.exists(font_path):
-        jp_font = fm.FontProperties(fname=font_path)
-        plt.rcParams['font.family'] = jp_font.get_name()
-    else:
-        plt.rcParams['font.family'] = "MS Gothic"
-else:  # macOS / Linux
-    # Linux やクラウド環境向け
-    plt.rcParams['font.family'] = "Noto Sans CJK JP"
+# Windows用フォント設定
+font_path = "C:/Windows/Fonts/meiryo.ttc"
+if os.path.exists(font_path):
+    jp_font = fm.FontProperties(fname=font_path)
+else:
+    jp_font = fm.FontProperties(family="MS Gothic")
+
+# matplotlib全体に反映（デフォルトフォントとして）
+plt.rcParams['font.family'] = jp_font.get_name()
+
 
 def show_analysis(DATA_DIR):
     pitcher_files = [f for f in os.listdir(DATA_DIR) if f.endswith(".csv")]
@@ -34,6 +33,16 @@ def show_analysis(DATA_DIR):
 
     st.write("### 球種の割合")
     pitch_counts = df["球種"].value_counts()
+    pitch_labels_en = {
+        "ストレート": "Fastball",
+        "カーブ": "Curve",
+        "スライダー": "Slider",
+        "チェンジアップ": "Changeup",
+        "フォーク": "splitter",
+        "ツーシーム": "two seam",
+        "カットボール": "cut ball",
+        "シュート": "shoot",
+    }
     fig, ax = plt.subplots()
     ax.pie(pitch_counts, labels=pitch_counts.index, autopct="%1.1f%%", startangle=70, textprops={'fontproperties': jp_font})
     ax.axis("equal")
@@ -143,9 +152,9 @@ def show_analysis(DATA_DIR):
     all_directions = outfield + infield
 
     positions = {
-        "レフト":(0.2,0.75),"左中間":(0.35,0.85),"センター":(0.5,0.9),
-        "右中間":(0.65,0.85),"ライト":(0.8,0.75),
-        "サード":(0.28,0.48),"ショート":(0.42,0.54),"セカンド":(0.58,0.54),"ファースト":(0.72,0.48)
+        "LF":(0.2,0.75),"LC":(0.35,0.85),"CF":(0.5,0.9),
+        "RC":(0.65,0.85),"RF":(0.8,0.75),
+        "3B":(0.28,0.48),"SS":(0.42,0.54),"2B":(0.58,0.54),"1B":(0.72,0.48)
     }
 
     def plot_direction(ax, df_side, title):
