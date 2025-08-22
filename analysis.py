@@ -208,7 +208,7 @@ def show_analysis():
         img_path = os.path.join("images", "istockphoto-165551036-612x612.jpg")
         if not os.path.exists(img_path):
          st.error(f"画像が見つかりません: {img_path}")
-        return
+         return
 
         img = mpimg.imread(img_path)
         ax.imshow(img, extent=[0, 1, 0, 1])
