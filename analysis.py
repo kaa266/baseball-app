@@ -153,7 +153,7 @@ def show_analysis(DATA_DIR):
         direction_counts = df_side["打球方向"].value_counts().reindex(all_directions, fill_value=0)
         direction_percents = (direction_counts / total * 100).round(1) if total>0 else direction_counts
 
-        img_path = os.path.join("images","istockphoto-165551036-612x612.jpg")
+        img_path = os.path.join("images","istockphoto-165551036-612x612 (1).jpg")
         if not os.path.exists(img_path):
             st.error(f"画像が見つかりません: {img_path}")
             return
