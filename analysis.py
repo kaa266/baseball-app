@@ -7,14 +7,15 @@ import os
 import matplotlib.font_manager as fm
 import matplotlib.image as mpimg
 
-# Windows用フォント設定
-font_path = "C:/Windows/Fonts/meiryo.ttc"
-if os.path.exists(font_path):
-    jp_font = fm.FontProperties(fname=font_path)
-else:
-    jp_font = fm.FontProperties(family="MS Gothic")
+if os.name == 'nt':  # Windows
+    font_path = "C:/Windows/Fonts/meiryo.ttc"
+    if os.path.exists(font_path):
+        jp_font = fm.FontProperties(fname=font_path)
+    else:
+        jp_font = fm.FontProperties(family="MS Gothic")
+else:  # Linux/Cloud
+    jp_font = fm.FontProperties(family="Noto Sans CJK JP")
 
-# matplotlib全体に反映（デフォルトフォントとして）
 plt.rcParams['font.family'] = jp_font.get_name()
 
 
@@ -141,6 +142,13 @@ def show_analysis(DATA_DIR):
     if "打球方向" not in df.columns or "打者左右" not in df.columns:
         st.error("このCSVに '打球方向' または '打者左右' 列がありません。")
         return
+    
+    direction_map = {
+    "レフト":"LF", "左中間":"LC", "センター":"CF",
+    "右中間":"RC","ライト":"RF",
+    "サード":"3B","ショート":"SS","セカンド":"2B","ファースト":"1B"
+}
+    df["打球方向"] = df["打球方向"].map(direction_map).fillna(df["打球方向"])
 
     df["打球方向"] = df["打球方向"].replace({
         "三塁":"サード","遊撃":"ショート","二塁":"セカンド","一塁":"ファースト",
@@ -189,3 +197,4 @@ def show_analysis(DATA_DIR):
         fig_l, ax_l = plt.subplots(figsize=(6,6))
         plot_direction(ax_l, df_l, "左打者")
         st.pyplot(fig_l)
+        plt.close(fig)
