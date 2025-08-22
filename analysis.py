@@ -206,6 +206,10 @@ def show_analysis():
         direction_percents = (direction_counts / total * 100).round(1) if total > 0 else direction_counts
 
         img_path = os.path.join("images", "istockphoto-165551036-612x612.jpg")
+        st.write("画像パス:", img_path)
+        st.write("絶対パス:", os.path.abspath(img_path))
+        st.write("画像存在チェック:", os.path.exists(img_path))
+
         if not os.path.exists(img_path):
          st.error(f"画像が見つかりません: {img_path}")
          return
