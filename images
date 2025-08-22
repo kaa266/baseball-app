@@ -1,3 +1,4 @@
+import streamlit as st
 import os
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
@@ -8,4 +9,5 @@ img = mpimg.imread(img_path)
 fig, ax = plt.subplots()
 ax.imshow(img)
 ax.axis('off')
-plt.show()
+st.pyplot(fig)
+
