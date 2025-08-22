@@ -9,6 +9,19 @@ import matplotlib.image as mpimg
 
 DATA_DIR = "data"
 
+def set_japanese_font():
+    """Windows / macOS / Linux 向けの日本語フォント設定"""
+    if os.name == 'nt':  # Windows
+        font_path = "C:/Windows/Fonts/meiryo.ttc"  # Windows 標準の Meiryo
+        if os.path.exists(font_path):
+            font_prop = fm.FontProperties(fname=font_path)
+            plt.rcParams['font.family'] = font_prop.get_name()
+        else:
+            plt.rcParams['font.family'] = "MS Gothic"
+    else:  # macOS / Linux
+        plt.rcParams['font.family'] = "Hiragino Maru Gothic Pro"  # macOS
+        # Linuxの場合は Noto Sans CJK JP などに変更可能
+
 def show_analysis(DATA_DIR):
     # データファイル一覧
     pitcher_files = [f for f in os.listdir(DATA_DIR) if f.endswith(".csv")]
