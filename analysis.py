@@ -7,21 +7,17 @@ import os
 import matplotlib.font_manager as fm
 import matplotlib.image as mpimg
 
-font_path = "IPAexGothic.ttf"  # プロジェクトに置いたフォント
-jp_font = fm.FontProperties(fname=font_path)
-plt.rcParams['font.family'] = jp_font.get_name()
-
-DATA_DIR = "data"
-
-# Windows用フォント設定
-font_path = "C:/Windows/Fonts/meiryo.ttc"
-if os.path.exists(font_path):
-    jp_font = fm.FontProperties(fname=font_path)
-else:
-    jp_font = fm.FontProperties(family="MS Gothic")
-
-# matplotlib全体に反映（デフォルトフォントとして）
-plt.rcParams['font.family'] = jp_font.get_name()
+# フォント設定
+if os.name == 'nt':  # Windows
+    font_path = "C:/Windows/Fonts/meiryo.ttc"
+    if os.path.exists(font_path):
+        jp_font = fm.FontProperties(fname=font_path)
+        plt.rcParams['font.family'] = jp_font.get_name()
+    else:
+        plt.rcParams['font.family'] = "MS Gothic"
+else:  # macOS / Linux
+    # Linux やクラウド環境向け
+    plt.rcParams['font.family'] = "Noto Sans CJK JP"
 
 def show_analysis(DATA_DIR):
     pitcher_files = [f for f in os.listdir(DATA_DIR) if f.endswith(".csv")]
