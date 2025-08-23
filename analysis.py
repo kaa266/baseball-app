@@ -111,13 +111,15 @@ def show_analysis(DATA_DIR):
         ax_l.invert_yaxis()
         st.pyplot(fig_l)
 
-    # 打球方向（野球場） - 英語化＆％表示修正版
+    #打球方向（野球場） - 英語化＆％表示修正版
     st.title("🏟️ Batted Ball Direction Analysis")
 
     if "打球方向" not in df.columns or "打者左右" not in df.columns:
      st.error("This CSV does not contain '打球方向' or '打者左右' columns.")
-    return
-
+     return
+    
+    
+    
     df["打球方向"] = df["打球方向"].replace({
     "三塁":"Third Base","遊撃":"Shortstop","二塁":"Second Base","一塁":"First Base",
     "3B":"Third Base","SS":"Shortstop","2B":"Second Base","1B":"First Base",
@@ -135,26 +137,26 @@ def show_analysis(DATA_DIR):
 }
 
     def plot_direction(ax, df_side, title):
-     total = len(df_side)
-    if total == 0:
+      total = len(df_side)
+      if total == 0:
         direction_percents = pd.Series(0, index=all_directions)
-    else:
+      else:
         direction_counts = df_side["打球方向"].value_counts().reindex(all_directions, fill_value=0)
         direction_percents = (direction_counts / total * 100).round(1)
 
-    img_path = os.path.join("images","istockphoto-165551036-612x612 (1).jpg")
-    if not os.path.exists(img_path):
-        st.error(f"Image not found: {img_path}")
-        return
-    img = mpimg.imread(img_path)
-    ax.imshow(img, extent=[0,1,0,1])
+        img_path = os.path.join("images","istockphoto-165551036-612x612 (1).jpg")
+        if not os.path.exists(img_path):
+         st.error(f"Image not found: {img_path}")
+         return
+        img = mpimg.imread(img_path)
+        ax.imshow(img, extent=[0,1,0,1])
 
-    for direction,(x,y) in positions.items():
-        percent = direction_percents.get(direction,0)
+        for direction,(x,y) in positions.items():
+         percent = direction_percents.get(direction,0)
         ax.text(x, y, f"{direction}\n{percent:.1f}%", ha="center", va="center", color="black", weight="bold")
 
-    ax.set_title(title)
-    ax.axis("off")
+        ax.set_title(title)
+        ax.axis("off")
 
     col1, col2 = st.columns(2)
     with col1:
