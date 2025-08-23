@@ -141,26 +141,26 @@ def show_analysis(DATA_DIR):
 }
 
     def plot_direction(ax, df_side, title):
-     total = len(df_side)
-     if total == 0:
-        direction_percents = pd.Series(0, index=all_directions)
-     else:
-        direction_counts = df_side["打球方向"].value_counts().reindex(all_directions, fill_value=0)
-        direction_percents = (direction_counts / total * 100).round(1)
+        total = len(df_side)
+        if total == 0:
+           direction_percents = pd.Series(0, index=all_directions)
+        else:
+           direction_counts = df_side["打球方向"].value_counts().reindex(all_directions, fill_value=0)
+           direction_percents = (direction_counts / total * 100).round(1)
 
-    img_path = os.path.join("images","istockphoto-165551036-612x612 (1).jpg")
-    if not os.path.exists(img_path):
-        st.error(f"Image not found: {img_path}")
-        return
-    img = mpimg.imread(img_path)
-    ax.imshow(img, extent=[0,1,0,1])
+        img_path = os.path.join("images","istockphoto-165551036-612x612 (1).jpg")
+        if not os.path.exists(img_path):
+           st.error(f"Image not found: {img_path}")
+           return
+        img = mpimg.imread(img_path)
+        ax.imshow(img, extent=[0,1,0,1])
 
-    for direction, (x,y) in positions.items():
-        percent = direction_percents.get(direction,0)
-        ax.text(x, y, f"{direction}\n{percent:.1f}%", ha="center", va="center", color="black", weight="bold")
+        for direction, (x,y) in positions.items():
+            percent = direction_percents.get(direction,0)
+            ax.text(x, y, f"{direction}\n{percent:.1f}%", ha="center", va="center", color="black", weight="bold")
 
-    ax.set_title(title)
-    ax.axis("off")
+        ax.set_title(title)
+        ax.axis("off")
 
 # プロット
     col1, col2 = st.columns(2)
