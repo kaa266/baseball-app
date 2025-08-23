@@ -8,9 +8,8 @@ import matplotlib.font_manager as fm
 import matplotlib.image as mpimg
 import platform
 
-# プロジェクト内のfontsフォルダに ipaexg.ttf を置いた場合
-import os
-import matplotlib.font_manager as fm
+# デフォルトで None
+jp_font = None
 
 font_path = os.path.join("fonts", "ipaexg.ttf")
 if os.path.exists(font_path):
