@@ -118,12 +118,24 @@ def show_analysis(DATA_DIR):
         st.error("This CSV does not contain '打球方向' or '打者左右' columns.")
         return
 
+     #打球方向を分割して展開
+    df_exploded = df.assign(打球方向=df["打球方向"].str.split(",")).explode("打球方向")
+
     # 2. ここで打球方向の値を変換する
     df["打球方向"] = df["打球方向"].replace({
         "三塁":"Third Base","遊撃":"Shortstop","二塁":"Second Base","一塁":"First Base",
         "3B":"Third Base","SS":"Shortstop","2B":"Second Base","1B":"First Base",
         "レフト":"Left","左中間":"Left Center","センター":"Center","右中間":"Right Center","ライト":"Right"
     })
+
+    # 右打者・左打者別に％計算
+    total_r = len(df_exploded[df_exploded["打者左右"]=="右"])
+    total_l = len(df_exploded[df_exploded["打者左右"]=="左"])
+
+    direction_counts_r = df_exploded[df_exploded["打者左右"]=="右"]["打球方向"].value_counts().reindex(all_directions, fill_value=0)
+    direction_counts_l = df_exploded[df_exploded["打者左右"]=="左"]["打球方向"].value_counts().reindex(all_directions, fill_value=0)
+
+    direction_percents_l = (direction_counts_l / total_l * 100).round(1) if total_l>0 else direction_counts_l
 
     outfield = ["Left","Left Center","Center","Right Center","Right"]
     infield = ["Third Base","Shortstop","Second Base","First Base"]
