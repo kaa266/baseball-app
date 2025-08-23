@@ -29,7 +29,7 @@ if not st.session_state['logged_in']:
         if username_input in users and password_input == password:
             st.session_state['logged_in'] = True
             st.success(f"{username_input}さん、ようこそ！")
-            st.experimental_rerun() # ログイン成功後、アプリを再実行してコンテンツを表示
+            st.rerun() # ログイン成功後、アプリを再実行してコンテンツを表示
         else:
             st.error("ユーザー名またはパスワードが間違っています。")
 else:
