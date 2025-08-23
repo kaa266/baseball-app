@@ -1,12 +1,15 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import matplotlib
+matplotlib.use("Agg") 
 import seaborn as sns
 import matplotlib.pyplot as plt
 import os
 import matplotlib.font_manager as fm
 import matplotlib.image as mpimg
 import platform
+ 
 
 # -------------------------
 # フォント設定（Windows / Cloud対応）
@@ -53,6 +56,7 @@ def show_analysis(DATA_DIR):
            textprops={'fontproperties': jp_font})
     ax.axis("equal")
     st.pyplot(fig)
+    plt.close(fig)  # ← 追加
 
     # -------------------------
     # カウント別球種割合
