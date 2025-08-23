@@ -5,7 +5,7 @@ import os
 
 # 認証情報の読み込み（必ず最初に配置）
 try:
-    users = st.secrets["auth"]["users"].split(',')
+    users = st.secrets["auth"]["users"]
     password = st.secrets["auth"]["password"]
 except KeyError:
     st.error("secrets.toml に認証情報がありません。アプリを停止します。")
