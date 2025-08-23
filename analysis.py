@@ -155,7 +155,7 @@ def show_analysis(DATA_DIR):
     df_exploded["打球方向"] = df_exploded["打球方向"].replace({
     "三塁":"Third Base","遊撃":"Shortstop","二塁":"Second Base","一塁":"First Base",
     "3B":"Third Base","SS":"Shortstop","2B":"Second Base","1B":"First Base",
-    "サード":"Third Base", "ショート":"Shortstop", "セカンド":"Second Base", "ファースト":"First Base",
+    "サード":"3B", "ショート":"SS", "セカンド":"2B", "ファースト":"1B",
     "レフト":"Left","左中間":"Left Center","センター":"Center","右中間":"Right Center","ライト":"Right"
 })
 
