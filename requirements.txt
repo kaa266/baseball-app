@@ -4,4 +4,3 @@ matplotlib
 seaborn
 numpy
 Pillow
-fonts-noto-cjk
