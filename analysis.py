@@ -113,8 +113,7 @@ def show_analysis(DATA_DIR):
 
     # 打球方向（野球場） - 英語化＆％表示修正版
     st.title("🏟️ Batted Ball Direction Analysis")
-
-    df = pd.read_csv(os.path.join(DATA_DIR, selected_file))
+    
     if "打球方向" not in df.columns or "打者左右" not in df.columns:
      st.error("This CSV does not contain '打球方向' or '打者左右' columns.")
     return
