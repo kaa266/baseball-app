@@ -155,7 +155,7 @@ def show_analysis(DATA_DIR):
     df_exploded["打球方向"] = df_exploded["打球方向"].replace({
     "三塁":"Third Base","遊撃":"Shortstop","二塁":"Second Base","一塁":"First Base",
     "3B":"Third Base","SS":"Shortstop","2B":"Second Base","1B":"First Base",
-    "サード":"3B", "ショート":"SS", "セカンド":"2B", "ファースト":"1B",
+    "サード":"Third Base", "ショート":"Shortstop", "セカンド":"Second Base", "ファースト":"First Base",
     "レフト":"Left","左中間":"Left Center","センター":"Center","右中間":"Right Center","ライト":"Right"
 })
 
@@ -170,6 +170,14 @@ def show_analysis(DATA_DIR):
     "Right Center":(0.65,0.85),"Right":(0.8,0.75),
     "Third Base":(0.28,0.48),"Shortstop":(0.42,0.54),"Second Base":(0.58,0.54),"First Base":(0.72,0.48)
 }
+
+     # 内野の表示名変換用辞書
+    infield_display_names = {
+        "Third Base": "3B",
+        "Shortstop": "SS",
+        "Second Base": "2B",
+        "First Base": "1B"
+        }
 
     def plot_direction(ax, df_side, title):
         total = len(df_side)
