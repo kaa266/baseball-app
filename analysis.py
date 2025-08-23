@@ -12,23 +12,22 @@ import streamlit as cloud
 
 import app as app
 
-# -------------------------
 # 日本語フォント設定
-# -------------------------
-# 日本語フォント設定
-if platform.system() == "Windows":
-    # Windowsの場合、メイリオフォントを使用
-    font_path = "C:/Windows/Fonts/meiryo.ttc"
-else:
-    # それ以外のOS（macOSやLinux）の場合、プロジェクト内のフォントを使用
-    font_path = os.path.join("font", "ipaexg.ttf")
+import matplotlib.font_manager as fm
+import os
 
+font_path = os.path.join("font", "ipaexg.ttf")
+
+# プロジェクト内のフォントが存在するか確認
 if os.path.exists(font_path):
-    # フォントがPC内に存在する場合
     jp_font = fm.FontProperties(fname=font_path)
+    # Matplotlibのフォントキャッシュをクリアして再構築
+    fm.fontManager.addfont(font_path)
+    plt.rcParams['font.family'] = jp_font.get_name()
+    plt.rcParams['axes.unicode_minus'] = False # グラフのマイナス記号を正しく表示
 else:
-    # フォントが見つからない場合、代替フォントを使用
-    jp_font = fm.FontProperties(family="DejaVu Sans")
+    # フォントが見つからない場合の代替処理
+    plt.rcParams['font.family'] = 'DejaVu Sans'
     print("指定された日本語フォントが見つかりません。代替フォントを使用します。")
 
 # -------------------------
