@@ -8,8 +8,9 @@ import matplotlib.font_manager as fm
 import matplotlib.image as mpimg
 import platform
 
-# デフォルトで None
-jp_font = None
+# -------------------------
+# フォント設定（Windows / Cloud対応）
+# -------------------------
 if platform.system() == "Windows":
     font_path = "C:/Windows/Fonts/meiryo.ttc"
     if os.path.exists(font_path):
@@ -17,37 +18,28 @@ if platform.system() == "Windows":
     else:
         jp_font = fm.FontProperties(family="MS Gothic")
 else:
-    # Linuxやクラウド環境
-    font_path = "font/ipaexg.ttf"  # リポジトリ内に置いた場合
+    # Cloud環境ではプロジェクト内に置いたIPAexGothicを使用
+    font_path = "font/ipaexg.ttf"
     if os.path.exists(font_path):
         jp_font = fm.FontProperties(fname=font_path)
     else:
-        # 最終的な保険
+        # 最終保険
         jp_font = fm.FontProperties(family="DejaVu Sans")
-
-# matplotlib全体に反映
-import matplotlib.pyplot as plt
-plt.rcParams['font.family'] = jp_font.get_name()
 
 DATA_DIR = "data"
 
-# Windows用フォント設定
-font_path = "C:/Windows/Fonts/meiryo.ttc"
-if os.path.exists(font_path):
-    jp_font = fm.FontProperties(fname=font_path)
-else:
-    jp_font = fm.FontProperties(family="MS Gothic")
-
-# matplotlib全体に反映（デフォルトフォントとして）
-plt.rcParams['font.family'] = jp_font.get_name()
-
 def show_analysis(DATA_DIR):
+    # -------------------------
+    # 投手CSV一覧
+    # -------------------------
     pitcher_files = [f for f in os.listdir(DATA_DIR) if f.endswith(".csv")]
     if not pitcher_files:
         st.warning("データがありません。先に投球データを入力してください。")
         return
 
-    # 円グラフ
+    # -------------------------
+    # 円グラフ（球種割合）
+    # -------------------------
     selected_file = st.selectbox("投手を選択（円グラフ）", pitcher_files, key="select_file_pie")
     df = pd.read_csv(os.path.join(DATA_DIR, selected_file))
     if df.empty:
@@ -57,11 +49,14 @@ def show_analysis(DATA_DIR):
     st.write("### 球種の割合")
     pitch_counts = df["球種"].value_counts()
     fig, ax = plt.subplots()
-    ax.pie(pitch_counts, labels=pitch_counts.index, autopct="%1.1f%%", startangle=70, textprops={'fontproperties': jp_font})
+    ax.pie(pitch_counts, labels=pitch_counts.index, autopct="%1.1f%%", startangle=70,
+           textprops={'fontproperties': jp_font})
     ax.axis("equal")
     st.pyplot(fig)
 
+    # -------------------------
     # カウント別球種割合
+    # -------------------------
     st.title("🎯 カウント別 球種割合")
     if "カウント" not in df.columns or "球種" not in df.columns:
         st.warning("このデータには 'カウント' または '球種' の列がありません。")
@@ -92,15 +87,10 @@ def show_analysis(DATA_DIR):
     plt.tight_layout()
     st.pyplot(plt.gcf())
 
-    # ヒートマップ
+    # -------------------------
+    # ヒートマップ（投球コース）
+    # -------------------------
     st.title("📊 ヒートマップ分析(投手目線)")
-    files = [f for f in os.listdir(DATA_DIR) if f.endswith(".csv")]
-    if not files:
-        st.warning("データが存在しません。まずはデータを入力してください。")
-        return
-
-    selected_file = st.selectbox("投手を選択（ヒートマップ）", files, key="select_file_heatmap")
-    df = pd.read_csv(os.path.join(DATA_DIR, selected_file))
     if "打者左右" not in df.columns or "コース" not in df.columns:
         st.error("必要なデータ（打者左右, コース）がありません。")
         return
@@ -147,10 +137,10 @@ def show_analysis(DATA_DIR):
         ax_l.invert_yaxis()
         st.pyplot(fig_l)
 
+    # -------------------------
     # 打球方向（野球場）
+    # -------------------------
     st.title("🏟️ 打球方向分析（野球場背景付き）")
-    selected_file = st.selectbox("投手を選択", pitcher_files)
-    df = pd.read_csv(os.path.join(DATA_DIR, selected_file))
     if "打球方向" not in df.columns or "打者左右" not in df.columns:
         st.error("このCSVに '打球方向' または '打者左右' 列がありません。")
         return
@@ -184,7 +174,8 @@ def show_analysis(DATA_DIR):
 
         for direction,(x,y) in positions.items():
             percent = direction_percents.get(direction,0)
-            ax.text(x,y,f"{direction}\n{percent}%",ha="center",va="center",color="black",weight="bold", fontproperties=jp_font)
+            ax.text(x, y, f"{direction}\n{percent}%", ha="center", va="center", color="black", weight="bold",
+                    fontproperties=jp_font)
         ax.set_title(title, fontproperties=jp_font)
         ax.axis("off")
 
