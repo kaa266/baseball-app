@@ -163,18 +163,18 @@ def show_analysis(DATA_DIR):
         ax.axis("off")
 
 # プロット
-    col1, col2 = st.columns(2)
+        col1, col2 = st.columns(2)
 
-    with col1:
-     st.subheader("Right-handed Batter")
-     df_r = df_exploded[df_exploded["打者左右"]=="右"]
-    fig_r, ax_r = plt.subplots(figsize=(6,6))
-    plot_direction(ax_r, df_r, "Right-handed")
-    st.pyplot(fig_r)
+        with col1:
+         st.subheader("Right-handed Batter")
+         df_r = df_exploded[df_exploded["打者左右"]=="右"]
+         fig_r, ax_r = plt.subplots(figsize=(6,6))
+         plot_direction(ax_r, df_r, "Right-handed")
+         st.pyplot(fig_r)
 
-    with col2:
-     st.subheader("Left-handed Batter")
-    df_l = df_exploded[df_exploded["打者左右"]=="左"]
-    fig_l, ax_l = plt.subplots(figsize=(6,6))
-    plot_direction(ax_l, df_l, "Left-handed")
-    st.pyplot(fig_l)
+        with col2:
+         st.subheader("Left-handed Batter")
+         df_l = df_exploded[df_exploded["打者左右"]=="左"]
+         fig_l, ax_l = plt.subplots(figsize=(6,6))
+         plot_direction(ax_l, df_l, "Left-handed")
+         st.pyplot(fig_l)
