@@ -27,6 +27,21 @@ def show_analysis(DATA_DIR):
     # --- Pitch type distribution ---
     st.write("### Pitch Type Distribution")
     pitch_counts = df["球種"].value_counts()
+    # 'Pitch_Type'などの球種を格納しているデータフレームのカラムを想定
+# df["Pitch_Type"] は、ご自身のデータフレームとカラム名に合わせて修正してください
+
+# データの値（カタカナ）を英語に変換
+    df["Pitch_Type"] = df["Pitch_Type"].replace({
+    "直球": "Fastball",
+    "スライダー": "Slider",
+    "チェンジアップ": "Changeup",
+    "カーブ": "Curveball",
+    "ツーシーム": "Two-Seam",
+    "シンカー": "Sinker",
+    # データ入力がカタカナの場合、ここに追加
+    "ストレート": "Fastball",
+    "シュート": "Two-Seam",
+})
     fig, ax = plt.subplots()
     ax.pie(pitch_counts, labels=pitch_counts.index, autopct="%1.1f%%", startangle=70)
     ax.axis("equal")
