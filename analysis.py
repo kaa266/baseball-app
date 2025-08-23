@@ -13,23 +13,21 @@ import streamlit as cloud
 import app as app
 
 # 日本語フォント設定
-import matplotlib.font_manager as fm
-import os
-
 font_path = os.path.join("font", "ipaexg.ttf")
 
-# プロジェクト内のフォントが存在するか確認
 if os.path.exists(font_path):
-    jp_font = fm.FontProperties(fname=font_path)
-    # Matplotlibのフォントキャッシュをクリアして再構築
+    # プロジェクト内のフォントファイルを読み込む
+    font_prop = fm.FontProperties(fname=font_path)
+    font_name = font_prop.get_name()
     fm.fontManager.addfont(font_path)
-    plt.rcParams['font.family'] = jp_font.get_name()
-    plt.rcParams['axes.unicode_minus'] = False # グラフのマイナス記号を正しく表示
+    plt.rcParams['font.family'] = font_name
 else:
     # フォントが見つからない場合の代替処理
     plt.rcParams['font.family'] = 'DejaVu Sans'
     print("指定された日本語フォントが見つかりません。代替フォントを使用します。")
 
+# グラフのマイナス記号を正しく表示する設定
+plt.rcParams['axes.unicode_minus'] = False
 # -------------------------
 # データディレクトリ
 # -------------------------
@@ -61,7 +59,7 @@ def show_analysis(DATA_DIR=DATA_DIR):
     pitch_counts = df["球種"].value_counts()
     fig, ax = plt.subplots()
     ax.pie(pitch_counts, labels=pitch_counts.index, autopct="%1.1f%%",
-           startangle=70, textprops={'fontproperties': jp_font})
+           startangle=70, textprops={})
     ax.axis("equal")
     st.pyplot(fig)
     plt.close(fig)
@@ -91,16 +89,16 @@ def show_analysis(DATA_DIR=DATA_DIR):
                                                    value_name="割合")
     fig, ax = plt.subplots(figsize=(12,6))
     sns.barplot(data=df_bar, x="カウント", y="割合", hue="球種", ax=ax)
-    ax.set_title("カウント別 球種割合", fontproperties=jp_font)
-    ax.set_xlabel("カウント", fontproperties=jp_font)
-    ax.set_ylabel("割合（%）", fontproperties=jp_font)
+    ax.set_title("カウント別 球種割合", )
+    ax.set_xlabel("カウント", )
+    ax.set_ylabel("割合（%）", )
     for container in ax.containers:
         for bar in container:
             height = bar.get_height()
             ax.text(bar.get_x() + bar.get_width()/2, height + 0.5, f'{height:.1f}%',
-                    ha='center', fontproperties=jp_font)
+                    ha='center', )
     plt.xticks(rotation=45)
-    plt.legend(title="球種", prop=jp_font, bbox_to_anchor=(1.05,1), loc='upper left')
+    plt.legend(title="球種",  bbox_to_anchor=(1.05,1), loc='upper left')
     plt.tight_layout()
     st.pyplot(fig)
     plt.close(fig)
@@ -139,8 +137,8 @@ def show_analysis(DATA_DIR=DATA_DIR):
         mat_right = create_zone_matrix(counts_right, "右")
         fig, ax = plt.subplots()
         sns.heatmap(mat_right, annot=True, fmt=".0f", cmap="Reds", ax=ax,
-                    annot_kws={"fontproperties":jp_font})
-        ax.set_title("右打者", fontproperties=jp_font)
+                    annot_kws={"fontproperties"})
+        ax.set_title("右打者", )
         ax.invert_yaxis()
         st.pyplot(fig)
         plt.close(fig)
@@ -152,8 +150,8 @@ def show_analysis(DATA_DIR=DATA_DIR):
         mat_left = create_zone_matrix(counts_left, "左")
         fig, ax = plt.subplots()
         sns.heatmap(mat_left, annot=True, fmt=".0f", cmap="Blues", ax=ax,
-                    annot_kws={"fontproperties":jp_font})
-        ax.set_title("左打者", fontproperties=jp_font)
+                    annot_kws={})
+        ax.set_title("左打者",)
         ax.invert_yaxis()
         st.pyplot(fig)
         plt.close(fig)
@@ -197,8 +195,8 @@ def show_analysis(DATA_DIR=DATA_DIR):
         for direction,(x,y) in positions.items():
             percent = direction_percents.get(direction,0)
             ax.text(x,y,f"{direction}\n{percent}%",ha="center",va="center",
-                    color="black",weight="bold", fontproperties=jp_font)
-        ax.set_title(title, fontproperties=jp_font)
+                    color="black",weight="bold", )
+        ax.set_title(title, )
         ax.axis("off")
 
     col1, col2 = st.columns(2)
