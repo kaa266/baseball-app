@@ -8,20 +8,20 @@ import matplotlib.font_manager as fm
 import matplotlib.image as mpimg
 import platform
 
-# -------------------------
-# フォント設定（環境依存）
-# -------------------------
-if platform.system() == "Windows":
-    font_path = "C:/Windows/Fonts/meiryo.ttc"
-    if os.path.exists(font_path):
-        jp_font = fm.FontProperties(fname=font_path)
-    else:
-        jp_font = fm.FontProperties(family="MS Gothic")
+# プロジェクト内のfontsフォルダに ipaexg.ttf を置いた場合
+import os
+import matplotlib.font_manager as fm
+
+font_path = os.path.join("fonts", "ipaexg.ttf")
+if os.path.exists(font_path):
+    jp_font = fm.FontProperties(fname=font_path)
 else:
-    # Linux（Streamlit Cloudなど）
+    # フォールバック
     jp_font = fm.FontProperties(family="DejaVu Sans")
 
+import matplotlib.pyplot as plt
 plt.rcParams['font.family'] = jp_font.get_name()
+
 
 
 # -------------------------
