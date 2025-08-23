@@ -4,22 +4,16 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 import os
-import matplotlib.font_manager as fm
 import matplotlib.image as mpimg
 
-# ---------- ローカル環境用フォント（日本語対応） ----------
-font_path = "C:/Windows/Fonts/meiryo.ttc"
-if os.path.exists(font_path):
-    jp_font = fm.FontProperties(fname=font_path)
-else:
-    jp_font = fm.FontProperties(family="MS Gothic")  # 保険
-
-plt.rcParams['font.family'] = jp_font.get_name()
+# Standard font for Streamlit Cloud
+plt.rcParams['font.family'] = "DejaVu Sans"
 
 DATA_DIR = "data"
+IMG_DIR = "images"
 
 def show_analysis(DATA_DIR):
-    # 投手選択（1回だけ）
+    # --- Select pitcher ---
     pitcher_files = [f for f in os.listdir(DATA_DIR) if f.endswith(".csv")]
     if not pitcher_files:
         st.warning("No data available. Please input pitcher data first.")
@@ -31,7 +25,7 @@ def show_analysis(DATA_DIR):
         st.info("No data available for this pitcher yet.")
         return
 
-    # ---------- Pitch Type Pie Chart ----------
+    # --- Pitch type pie chart ---
     st.write("### Pitch Type Distribution")
     pitch_counts = df["球種"].value_counts()
     fig, ax = plt.subplots()
@@ -39,10 +33,10 @@ def show_analysis(DATA_DIR):
     ax.axis("equal")
     st.pyplot(fig)
 
-    # ---------- Pitch Type by Count ----------
+    # --- Pitch type by count ---
     st.title("🎯 Pitch Type by Count")
     if "カウント" not in df.columns or "球種" not in df.columns:
-        st.warning("CSV does not have 'カウント' or '球種' columns.")
+        st.warning("This data does not contain 'カウント' or '球種' columns.")
         return
 
     df["カウント"] = df["カウント"].astype(str).str.strip().str.replace("０","0").str.replace("１","1")\
@@ -61,67 +55,62 @@ def show_analysis(DATA_DIR):
     ax.set_title("Pitch Type by Count")
     ax.set_xlabel("Count")
     ax.set_ylabel("Percentage (%)")
-    for container in ax.containers:
-        for bar in container:
-            height = bar.get_height()
-            ax.text(bar.get_x() + bar.get_width()/2, height + 0.5, f'{height:.1f}%', ha='center')
     plt.xticks(rotation=45)
     plt.legend(title="Pitch Type", bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.tight_layout()
     st.pyplot(plt.gcf())
 
-    # ---------- Heatmap Analysis ----------
-    st.title("📊 Heatmap Analysis (Pitcher's View)")
+    # --- Heatmap analysis ---
+    st.title("📊 Heatmap Analysis (Pitcher view)")
     if "打者左右" not in df.columns or "コース" not in df.columns:
-        st.error("CSV must have '打者左右' and 'コース' columns.")
-        return
+        st.warning("Data does not contain '打者左右' or 'コース' columns.")
+    else:
+        zones = ["High Inside","High Center","High Outside",
+                 "Middle Inside","Middle Center","Middle Outside",
+                 "Low Inside","Low Center","Low Outside"]
+        zone_map = {
+            "High Inside":(2,2),"High Center":(2,1),"High Outside":(2,0),
+            "Middle Inside":(1,2),"Middle Center":(1,1),"Middle Outside":(1,0),
+            "Low Inside":(0,2),"Low Center":(0,1),"Low Outside":(0,0)
+        }
 
-    zones = ["内角高め","真ん中高め","外角高め",
-             "内角真ん中","真ん中","外角真ん中",
-             "内角低め","真ん中低め","外角低め"]
-    zone_map = {
-        "内角高め": (2,2), "真ん中高め": (2,1), "外角高め":(2,0),
-        "内角真ん中":(1,2), "真ん中":(1,1), "外角真ん中":(1,0),
-        "内角低め":(0,2), "真ん中低め":(0,1), "外角低め":(0,0)
-    }
+        def create_zone_matrix(zone_series, batter_side="Right"):
+            mat = np.zeros((3,3))
+            for zone, count in zone_series.items():
+                if zone in zone_map:
+                    i,j = zone_map[zone]
+                    if batter_side=="Left":
+                        j = 2-j
+                    mat[i,j] = count
+            return mat
 
-    def create_zone_matrix(zone_series, batter_side="Right"):
-        mat = np.zeros((3,3))
-        for zone, count in zone_series.items():
-            if zone in zone_map:
-                i,j = zone_map[zone]
-                if batter_side=="Left":
-                    j = 2-j
-                mat[i,j] = count
-        return mat
+        col1, col2 = st.columns(2)
+        with col1:
+            st.subheader("Right-handed batters")
+            df_right = df[df["打者左右"]=="右"]
+            counts_right = df_right["コース"].value_counts().reindex(zones, fill_value=0)
+            mat_right = create_zone_matrix(counts_right, "Right")
+            fig_r, ax_r = plt.subplots()
+            sns.heatmap(mat_right, annot=True, fmt=".0f", cmap="Reds", ax=ax_r)
+            ax_r.set_title("Right-handed")
+            ax_r.invert_yaxis()
+            st.pyplot(fig_r)
 
-    col1, col2 = st.columns(2)
-    with col1:
-        st.subheader("Right-handed Batters")
-        df_right = df[df["打者左右"]=="右"]
-        counts_right = df_right["コース"].value_counts().reindex(zones, fill_value=0)
-        mat_right = create_zone_matrix(counts_right, batter_side="Right")
-        fig_r, ax_r = plt.subplots()
-        sns.heatmap(mat_right, annot=True, fmt=".0f", cmap="Reds", ax=ax_r)
-        ax_r.set_title("Right-handed Batters")
-        ax_r.invert_yaxis()
-        st.pyplot(fig_r)
+        with col2:
+            st.subheader("Left-handed batters")
+            df_left = df[df["打者左右"]=="左"]
+            counts_left = df_left["コース"].value_counts().reindex(zones, fill_value=0)
+            mat_left = create_zone_matrix(counts_left, "Left")
+            fig_l, ax_l = plt.subplots()
+            sns.heatmap(mat_left, annot=True, fmt=".0f", cmap="Blues", ax=ax_l)
+            ax_l.set_title("Left-handed")
+            ax_l.invert_yaxis()
+            st.pyplot(fig_l)
 
-    with col2:
-        st.subheader("Left-handed Batters")
-        df_left = df[df["打者左右"]=="左"]
-        counts_left = df_left["コース"].value_counts().reindex(zones, fill_value=0)
-        mat_left = create_zone_matrix(counts_left, batter_side="Left")
-        fig_l, ax_l = plt.subplots()
-        sns.heatmap(mat_left, annot=True, fmt=".0f", cmap="Blues", ax=ax_l)
-        ax_l.set_title("Left-handed Batters")
-        ax_l.invert_yaxis()
-        st.pyplot(fig_l)
-
-    # ---------- Hit Direction Analysis ----------
-    st.title("🏟️ Hit Direction Analysis (Stadium Background)")
+    # --- Hit direction analysis ---
+    st.title("🏟️ Hit Direction Analysis (Field view)")
     if "打球方向" not in df.columns or "打者左右" not in df.columns:
-        st.error("CSV must have '打球方向' and '打者左右' columns.")
+        st.warning("Data does not contain '打球方向' or '打者左右' columns.")
         return
 
     df["打球方向"] = df["打球方向"].replace({
@@ -129,13 +118,13 @@ def show_analysis(DATA_DIR):
         "3B":"Third","SS":"Short","2B":"Second","1B":"First"
     })
 
-    outfield = ["Left","Left-Center","Center","Right-Center","Right"]
+    outfield = ["Left","Left Center","Center","Right Center","Right"]
     infield = ["Third","Short","Second","First"]
     all_directions = outfield + infield
 
     positions = {
-        "Left":(0.2,0.75),"Left-Center":(0.35,0.85),"Center":(0.5,0.9),
-        "Right-Center":(0.65,0.85),"Right":(0.8,0.75),
+        "Left":(0.2,0.75),"Left Center":(0.35,0.85),"Center":(0.5,0.9),
+        "Right Center":(0.65,0.85),"Right":(0.8,0.75),
         "Third":(0.28,0.48),"Short":(0.42,0.54),"Second":(0.58,0.54),"First":(0.72,0.48)
     }
 
@@ -144,7 +133,7 @@ def show_analysis(DATA_DIR):
         direction_counts = df_side["打球方向"].value_counts().reindex(all_directions, fill_value=0)
         direction_percents = (direction_counts / total * 100).round(1) if total>0 else direction_counts
 
-        img_path = os.path.join("images","istockphoto-165551036-612x612 (1).jpg")
+        img_path = os.path.join(IMG_DIR,"field.jpg")
         if not os.path.exists(img_path):
             st.error(f"Image not found: {img_path}")
             return
@@ -159,15 +148,16 @@ def show_analysis(DATA_DIR):
 
     col1, col2 = st.columns(2)
     with col1:
-        st.subheader("Right-handed Batters")
+        st.subheader("Right-handed batters")
         df_r = df[df["打者左右"]=="右"]
         fig_r, ax_r = plt.subplots(figsize=(6,6))
-        plot_direction(ax_r, df_r, "Right-handed Batters")
+        plot_direction(ax_r, df_r, "Right-handed")
         st.pyplot(fig_r)
 
     with col2:
-        st.subheader("Left-handed Batters")
+        st.subheader("Left-handed batters")
         df_l = df[df["打者左右"]=="左"]
         fig_l, ax_l = plt.subplots(figsize=(6,6))
-        plot_direction(ax_l, df_l, "Left-handed Batters")
+        plot_direction(ax_l, df_l, "Left-handed")
         st.pyplot(fig_l)
+
