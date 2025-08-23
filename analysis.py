@@ -113,12 +113,11 @@ def show_analysis(DATA_DIR):
 
     # 打球方向（野球場） - 英語化＆％表示修正版
     st.title("🏟️ Batted Ball Direction Analysis")
-    
+
     if "打球方向" not in df.columns or "打者左右" not in df.columns:
      st.error("This CSV does not contain '打球方向' or '打者左右' columns.")
     return
 
-    
     df["打球方向"] = df["打球方向"].replace({
     "三塁":"Third Base","遊撃":"Shortstop","二塁":"Second Base","一塁":"First Base",
     "3B":"Third Base","SS":"Shortstop","2B":"Second Base","1B":"First Base",
@@ -171,3 +170,5 @@ def show_analysis(DATA_DIR):
     fig_l, ax_l = plt.subplots(figsize=(6,6))
     plot_direction(ax_l, df_l, "Left-handed")
     st.pyplot(fig_l)
+
+    
