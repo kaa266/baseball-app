@@ -111,66 +111,64 @@ def show_analysis(DATA_DIR):
         ax_l.invert_yaxis()
         st.pyplot(fig_l)
 
-    #打球方向（野球場） - 英語化＆％表示修正版
+    # --- Batted Ball Direction Analysis ---
     st.title("🏟️ Batted Ball Direction Analysis")
-
+    
     if "打球方向" not in df.columns or "打者左右" not in df.columns:
-     st.error("This CSV does not contain '打球方向' or '打者左右' columns.")
-     return
-    
-    
-    
+        st.error("This CSV does not contain '打球方向' or '打者左右' columns.")
+        return
+
+    # 2. ここで打球方向の値を変換する
     df["打球方向"] = df["打球方向"].replace({
-    "三塁":"Third Base","遊撃":"Shortstop","二塁":"Second Base","一塁":"First Base",
-    "3B":"Third Base","SS":"Shortstop","2B":"Second Base","1B":"First Base",
-    "レフト":"Left","左中間":"Left Center","センター":"Center","右中間":"Right Center","ライト":"Right"
-     })
+        "三塁":"Third Base","遊撃":"Shortstop","二塁":"Second Base","一塁":"First Base",
+        "3B":"Third Base","SS":"Shortstop","2B":"Second Base","1B":"First Base",
+        "レフト":"Left","左中間":"Left Center","センター":"Center","右中間":"Right Center","ライト":"Right"
+    })
 
     outfield = ["Left","Left Center","Center","Right Center","Right"]
     infield = ["Third Base","Shortstop","Second Base","First Base"]
     all_directions = outfield + infield
 
     positions = {
-    "Left":(0.2,0.75),"Left Center":(0.35,0.85),"Center":(0.5,0.9),
-    "Right Center":(0.65,0.85),"Right":(0.8,0.75),
-    "Third Base":(0.28,0.48),"Shortstop":(0.42,0.54),"Second Base":(0.58,0.54),"First Base":(0.72,0.48)
-}
+        "Left":(0.2,0.75),"Left Center":(0.35,0.85),"Center":(0.5,0.9),
+        "Right Center":(0.65,0.85),"Right":(0.8,0.75),
+        "Third Base":(0.28,0.48),"Shortstop":(0.42,0.54),"Second Base":(0.58,0.54),"First Base":(0.72,0.48)
+    }
 
     def plot_direction(ax, df_side, title):
-      total = len(df_side)
-      if total == 0:
-        direction_percents = pd.Series(0, index=all_directions)
-      else:
-        direction_counts = df_side["打球方向"].value_counts().reindex(all_directions, fill_value=0)
-        direction_percents = (direction_counts / total * 100).round(1)
+        total = len(df_side)
+        if total == 0:
+            direction_percents = pd.Series(0, index=all_directions)
+        else:
+            # 3. value_counts()が正しく動作するように、列名が変換されていることを確認
+            direction_counts = df_side["打球方向"].value_counts().reindex(all_directions, fill_value=0)
+            direction_percents = (direction_counts / total * 100).round(1)
 
         img_path = os.path.join("images","istockphoto-165551036-612x612 (1).jpg")
         if not os.path.exists(img_path):
-         st.error(f"Image not found: {img_path}")
-         return
+            st.error(f"Image not found: {img_path}")
+            return
         img = mpimg.imread(img_path)
         ax.imshow(img, extent=[0,1,0,1])
 
         for direction,(x,y) in positions.items():
-         percent = direction_percents.get(direction,0)
-        ax.text(x, y, f"{direction}\n{percent:.1f}%", ha="center", va="center", color="black", weight="bold")
+            percent = direction_percents.get(direction,0)
+            ax.text(x, y, f"{direction}\n{percent:.1f}%", ha="center", va="center", color="black", weight="bold")
 
         ax.set_title(title)
         ax.axis("off")
 
     col1, col2 = st.columns(2)
     with col1:
-     st.subheader("Right-handed Batter")
-    df_r = df[df["打者左右"]=="右"]
-    fig_r, ax_r = plt.subplots(figsize=(6,6))
-    plot_direction(ax_r, df_r, "Right-handed")
-    st.pyplot(fig_r)
+        st.subheader("Right-handed Batter")
+        df_r = df[df["打者左右"]=="右"]
+        fig_r, ax_r = plt.subplots(figsize=(6,6))
+        plot_direction(ax_r, df_r, "Right-handed")
+        st.pyplot(fig_r)
 
     with col2:
-     st.subheader("Left-handed Batter")
-    df_l = df[df["打者左右"]=="左"]
-    fig_l, ax_l = plt.subplots(figsize=(6,6))
-    plot_direction(ax_l, df_l, "Left-handed")
-    st.pyplot(fig_l)
-
-    
+        st.subheader("Left-handed Batter")
+        df_l = df[df["打者左右"]=="左"]
+        fig_l, ax_l = plt.subplots(figsize=(6,6))
+        plot_direction(ax_l, df_l, "Left-handed")
+        st.pyplot(fig_l)
