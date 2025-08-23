@@ -6,6 +6,28 @@ import matplotlib.pyplot as plt
 import os
 import matplotlib.font_manager as fm
 import matplotlib.image as mpimg
+import platform
+
+# デフォルトで None
+jp_font = None
+if platform.system() == "Windows":
+    font_path = "C:/Windows/Fonts/meiryo.ttc"
+    if os.path.exists(font_path):
+        jp_font = fm.FontProperties(fname=font_path)
+    else:
+        jp_font = fm.FontProperties(family="MS Gothic")
+else:
+    # Linuxやクラウド環境
+    font_path = "font/ipaexg.ttf"  # リポジトリ内に置いた場合
+    if os.path.exists(font_path):
+        jp_font = fm.FontProperties(fname=font_path)
+    else:
+        # 最終的な保険
+        jp_font = fm.FontProperties(family="DejaVu Sans")
+
+# matplotlib全体に反映
+import matplotlib.pyplot as plt
+plt.rcParams['font.family'] = jp_font.get_name()
 
 DATA_DIR = "data"
 
@@ -153,7 +175,7 @@ def show_analysis(DATA_DIR):
         direction_counts = df_side["打球方向"].value_counts().reindex(all_directions, fill_value=0)
         direction_percents = (direction_counts / total * 100).round(1) if total>0 else direction_counts
 
-        img_path = os.path.join("images","istockphoto-165551036-612x612.jpg")
+        img_path = os.path.join("images","istockphoto-165551036-612x612 (1).jpg")
         if not os.path.exists(img_path):
             st.error(f"画像が見つかりません: {img_path}")
             return
