@@ -1,28 +1,35 @@
-# analysis.py 完全版（クラウド対応）
-import streamlit as st
-import pandas as pd
-import numpy as np
-import seaborn as sns
-import matplotlib
-matplotlib.use("Agg")  # Streamlit Cloud対応
+import os
+import platform
+
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as fm
 import matplotlib.image as mpimg
-import os
-import platform
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import streamlit as st
+import streamlit as cloud
+
+import app as app
 
 # -------------------------
 # 日本語フォント設定
 # -------------------------
+# 日本語フォント設定
 if platform.system() == "Windows":
+    # Windowsの場合、メイリオフォントを使用
     font_path = "C:/Windows/Fonts/meiryo.ttc"
 else:
-    font_path = os.path.join("font","ipaexg.ttf")  # プロジェクト内フォルダから読む
+    # それ以外のOS（macOSやLinux）の場合、プロジェクト内のフォントを使用
+    font_path = os.path.join("font", "ipaexg.ttf")
 
 if os.path.exists(font_path):
+    # フォントがPC内に存在する場合
     jp_font = fm.FontProperties(fname=font_path)
 else:
+    # フォントが見つからない場合、代替フォントを使用
     jp_font = fm.FontProperties(family="DejaVu Sans")
+    print("指定された日本語フォントが見つかりません。代替フォントを使用します。")
 
 # -------------------------
 # データディレクトリ
