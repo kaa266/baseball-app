@@ -48,7 +48,7 @@ def show_analysis(DATA_DIR="data"):
 
     fig, ax = plt.subplots()
     ax.pie(pitch_counts, labels=pitch_counts.index, autopct="%1.1f%%", startangle=70,
-           textprops={'fontproperties': jp_font})
+           )
     ax.axis("equal")
     st.pyplot(fig)
 
@@ -77,14 +77,14 @@ def show_analysis(DATA_DIR="data"):
 
     plt.figure(figsize=(12,6))
     ax = sns.barplot(data=df_bar, x="カウント", y="割合", hue="球種")
-    ax.set_title("カウント別 球種割合", fontproperties=jp_font)
-    ax.set_xlabel("カウント", fontproperties=jp_font)
-    ax.set_ylabel("割合（%）", fontproperties=jp_font)
+    ax.set_title("カウント別 球種割合", )
+    ax.set_xlabel("カウント",)
+    ax.set_ylabel("割合（%）",)
     for container in ax.containers:
         for bar in container:
             height = bar.get_height()
             ax.text(bar.get_x() + bar.get_width()/2, height + 0.5, f'{height:.1f}%',
-                    ha='center', fontproperties=jp_font)
+                    ha='center', )
     plt.xticks(rotation=45)
     plt.legend(title="球種", prop=jp_font, bbox_to_anchor=(1.05,1), loc='upper left')
     plt.tight_layout()
@@ -124,8 +124,8 @@ def show_analysis(DATA_DIR="data"):
         counts_right = df_right["コース"].value_counts().reindex(zones, fill_value=0)
         mat_right = create_zone_matrix(counts_right, batter_side="右")
         fig_r, ax_r = plt.subplots()
-        sns.heatmap(mat_right, annot=True, fmt=".0f", cmap="Reds", ax=ax_r, annot_kws={"fontproperties":jp_font})
-        ax_r.set_title("右打者", fontproperties=jp_font)
+        sns.heatmap(mat_right, annot=True, fmt=".0f", cmap="Reds", ax=ax_r, annot_kws={})
+        ax_r.set_title("右打者", )
         ax_r.invert_yaxis()
         st.pyplot(fig_r)
 
@@ -135,8 +135,8 @@ def show_analysis(DATA_DIR="data"):
         counts_left = df_left["コース"].value_counts().reindex(zones, fill_value=0)
         mat_left = create_zone_matrix(counts_left, batter_side="左")
         fig_l, ax_l = plt.subplots()
-        sns.heatmap(mat_left, annot=True, fmt=".0f", cmap="Blues", ax=ax_l, annot_kws={"fontproperties":jp_font})
-        ax_l.set_title("左打者", fontproperties=jp_font)
+        sns.heatmap(mat_left, annot=True, fmt=".0f", cmap="Blues", ax=ax_l, annot_kws={})
+        ax_l.set_title("左打者", )
         ax_l.invert_yaxis()
         st.pyplot(fig_l)
 
@@ -173,8 +173,8 @@ def show_analysis(DATA_DIR="data"):
 
         for direction,(x,y) in positions.items():
             percent = direction_percents.get(direction,0)
-            ax.text(x,y,f"{direction}\n{percent}%",ha="center",va="center",color="black",weight="bold", fontproperties=jp_font)
-        ax.set_title(title, fontproperties=jp_font)
+            ax.text(x,y,f"{direction}\n{percent}%",ha="center",va="center",color="black",weight="bold", )
+        ax.set_title(title, )
         ax.axis("off")
 
     col1,col2 = st.columns(2)
