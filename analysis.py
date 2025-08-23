@@ -55,6 +55,27 @@ def show_analysis(DATA_DIR):
 
     df["カウント"] = df["カウント"].astype(str).str.strip().str.replace("０","0").str.replace("１","1")\
                     .str.replace("２","2").str.replace("３","3")
+    
+    pitch_type_map = {
+        "ストレート": "Fastball",
+        "速球": "Fastball",
+        "直球": "Fastball",
+        "フォーシーム": "Fastball",
+        "ツーシーム": "Fastball",
+        "シンカー": "Breaking Ball",
+        "カットボール": "Breaking Ball",
+        "スライダー": "Breaking Ball",
+        "カーブ": "Breaking Ball",
+        "ナックルカーブ": "Breaking Ball",
+        "フォーク": "Off-speed Pitch",
+        "チェンジアップ": "Off-speed Pitch",
+        "ナックル": "Off-speed Pitch",
+        "スプリット": "Off-speed Pitch",
+        "ツーシームチェンジ": "Off-speed Pitch",
+        "ジャイロ": "Hybrid Pitch",
+        "ハイブリッド": "Hybrid Pitch",
+    }
+
     count_pitch = df.groupby(["カウント", "球種"]).size().unstack(fill_value=0)
     count_pitch_percent = (count_pitch.T / count_pitch.sum(axis=1)).T * 100
     count_pitch_percent = count_pitch_percent.round(1)
