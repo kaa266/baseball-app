@@ -14,25 +14,15 @@ import platform
 # -------------------------
 # 日本語フォント設定
 # -------------------------
-jp_font = None
 if platform.system() == "Windows":
     font_path = "C:/Windows/Fonts/meiryo.ttc"
-    if os.path.exists(font_path):
-        jp_font = fm.FontProperties(fname=font_path)
-    else:
-        jp_font = fm.FontProperties(family="MS Gothic")
 else:
-    font_path = "font/ipaexg.ttf"  # プロジェクト内に置く
-    if os.path.exists(font_path):
-        jp_font = fm.FontProperties(fname=font_path)
-    else:
-        jp_font = fm.FontProperties(family="DejaVu Sans")
+    font_path = os.path.join("font","ipaexg.ttf")  # プロジェクト内フォルダから読む
 
-# 安全に rcParams に設定
-if jp_font is not None:
-    plt.rcParams['font.family'] = jp_font.get_name()
+if os.path.exists(font_path):
+    jp_font = fm.FontProperties(fname=font_path)
 else:
-    plt.rcParams['font.family'] = "DejaVu Sans"
+    jp_font = fm.FontProperties(family="DejaVu Sans")
 
 # -------------------------
 # データディレクトリ
