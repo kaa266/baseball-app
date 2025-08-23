@@ -75,7 +75,7 @@ def show_analysis(DATA_DIR):
         "ジャイロ": "Hybrid Pitch",
         "ハイブリッド": "Hybrid Pitch",
     }
-
+    df['球種'] = df['球種'].apply(lambda x: pitch_type_map.get(x, x))
     count_pitch = df.groupby(["カウント", "球種"]).size().unstack(fill_value=0)
     count_pitch_percent = (count_pitch.T / count_pitch.sum(axis=1)).T * 100
     count_pitch_percent = count_pitch_percent.round(1)
