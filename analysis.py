@@ -37,6 +37,7 @@ def show_analysis(DATA_DIR):
     "シンカー": "Sinker",
     "ストレート": "Fastball",
     "シュート": "Two-Seam",
+    "カットボール": "cut ball",
 })
 
 # 変換後の 'pitch_type' 列のデータを使ってカウント
@@ -58,22 +59,15 @@ def show_analysis(DATA_DIR):
     
     pitch_type_map = {
         "ストレート": "Fastball",
-        "速球": "Fastball",
-        "直球": "Fastball",
         "フォーシーム": "Fastball",
-        "ツーシーム": "Fastball",
-        "シンカー": "Breaking Ball",
-        "カットボール": "Breaking Ball",
-        "スライダー": "Breaking Ball",
-        "カーブ": "Breaking Ball",
-        "ナックルカーブ": "Breaking Ball",
+        "ツーシーム": "Two-Seam",
+        "シンカー": "Sinker",
+        "カットボール": "cut Ball",
+        "スライダー": "Slider",
+        "カーブ": "Curveball",
         "フォーク": "Off-speed Pitch",
-        "チェンジアップ": "Off-speed Pitch",
-        "ナックル": "Off-speed Pitch",
+        "チェンジアップ": "Changeup ",
         "スプリット": "Off-speed Pitch",
-        "ツーシームチェンジ": "Off-speed Pitch",
-        "ジャイロ": "Hybrid Pitch",
-        "ハイブリッド": "Hybrid Pitch",
     }
     df['球種'] = df['球種'].apply(lambda x: pitch_type_map.get(x, x))
     count_pitch = df.groupby(["カウント", "球種"]).size().unstack(fill_value=0)
