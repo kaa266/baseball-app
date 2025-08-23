@@ -28,7 +28,11 @@ else:
     else:
         jp_font = fm.FontProperties(family="DejaVu Sans")
 
-plt.rcParams['font.family'] = jp_font.get_name()
+# 安全に rcParams に設定
+if jp_font is not None:
+    plt.rcParams['font.family'] = jp_font.get_name()
+else:
+    plt.rcParams['font.family'] = "DejaVu Sans"
 
 # -------------------------
 # データディレクトリ
