@@ -6,6 +6,9 @@ import matplotlib.pyplot as plt
 import os
 import matplotlib.image as mpimg
 
+plt.rcParams['font.family'] = 'DejaVu Sans'  # Matplotlib 標準英語フォント
+
+
 DATA_DIR = "data"
 
 def show_analysis(DATA_DIR):
