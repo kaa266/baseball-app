@@ -1,0 +1,12 @@
+import os
+import platform
+import matplotlib.pyplot as plt
+
+if platform.system() == "Windows":
+    plt.rcParams['font.family'] = "Meiryo"
+else:
+    font_path = os.path.join("font", "ipaexg.ttf")
+    if os.path.exists(font_path):
+        plt.rcParams['font.family'] = "IPAexGothic"
+    else:
+        plt.rcParams['font.family'] = "DejaVu Sans"
