@@ -31,7 +31,7 @@ def show_analysis(DATA_DIR):
 # df["Pitch_Type"] は、ご自身のデータフレームとカラム名に合わせて修正してください
 
 # データの値（カタカナ）を英語に変換
-    df["Pitch_type"] = df["Pitch_type"].replace({
+    df["pitch_type"] = df["pitch_type"].replace({
     "直球": "Fastball",
     "スライダー": "Slider",
     "チェンジアップ": "Changeup",
