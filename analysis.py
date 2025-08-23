@@ -8,8 +8,7 @@ import matplotlib.font_manager as fm
 import matplotlib.image as mpimg
 import platform
 
-# デフォルトで None
-jp_font = None
+
 
 font_path = os.path.join("fonts", "ipaexg.ttf")
 if os.path.exists(font_path):
@@ -18,8 +17,7 @@ else:
     # フォールバック
     jp_font = fm.FontProperties(family="DejaVu Sans")
 
-import matplotlib.pyplot as plt
-plt.rcParams['font.family'] = jp_font.get_name()
+
 
 
 
