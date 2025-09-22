@@ -3,6 +3,9 @@ import pandas as pd
 import os
 from datetime import datetime
 
+DATA_DIR = "data"
+
+
 def show_input_form(DATA_DIR):
     st.header("⚾ 投球データ入力フォーム")
 
