@@ -149,7 +149,8 @@ def show_input_form(DATA_DIR):
         # ----------------------------
         try:
             GITHUB_TOKEN = st.secrets["GITHUB_TOKEN"]
-            REPO_NAME = "username/repo_name"   # ←自分のリポジトリ名
+            REPO_NAME = "kaa266/baseball-app"
+   # ←自分のリポジトリ名
             FILE_PATH = f"data/{pitcher_name}.csv"
 
             g = Github(GITHUB_TOKEN)
