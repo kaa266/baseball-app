@@ -5,17 +5,47 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import os
 import matplotlib.image as mpimg
+from reportlab.pdfgen import canvas
+from io import BytesIO
 
 plt.rcParams['font.family'] = 'DejaVu Sans'  # Matplotlib 標準英語フォント
 
 
 DATA_DIR = "data"
 
+def create_pdf():
+    buffer = BytesIO()
+    c = canvas.Canvas(buffer)
+    c.drawString(100, 750, "これはテストPDFです。")
+    c.drawString(100, 730, "Streamlitでボタンから作成しました！")
+    c.showPage()
+    c.save()
+    buffer.seek(0)
+    return buffer
+
+# ボタンを押したらPDFを生成
+
+    
+
 def show_analysis(DATA_DIR):
+
+    
+# ボタンを押したらPDFを生成
+    if st.button("PDFを作る"):
+       pdf_buffer = create_pdf()
+    st.download_button(
+        label="📥 PDFをダウンロード",
+        data=pdf_buffer,
+        file_name="sample.pdf",
+        mime="application/pdf"
+    )
     pitcher_files = [f for f in os.listdir(DATA_DIR) if f.endswith(".csv")]
     if not pitcher_files:
         st.warning("No data found. Please input pitcher data first.")
         return
+    
+
+
     
     # 1回だけ投手選択
     selected_file = st.selectbox("Select Pitcher", pitcher_files)

@@ -58,6 +58,10 @@ def show_input_form(DATA_DIR):
     # 入力フォーム
     # ----------------------------
     with st.form("input_form"):
+
+        
+
+
         pitcher_name = st.text_input("投手名（新規でもOK）", key="pitcher_name")
         speed_input = st.text_input("球速 (km/h) ※任意", key="speed_input")
 
