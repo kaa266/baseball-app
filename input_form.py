@@ -9,39 +9,55 @@ DATA_DIR = "data"
 os.makedirs(DATA_DIR, exist_ok=True)
 
 def save_to_github(df, pitcher_name):
-  # ----------------------------
-        # GitHub 自動保存
-        # ----------------------------
+    """
+    DataFrame を GitHub に保存する関数
+    - 既存ファイルがあれば update_file
+    - なければ create_file
+    """
+    try:
+        GITHUB_TOKEN = st.secrets["GITHUB_TOKEN"]
+        REPO_NAME = "kaa266/baseball-app"  # 自分のリポジトリ名
+        FILE_PATH = f"data/{pitcher_name.strip()}.csv"  # 空白除去
+
+        g = Github(GITHUB_TOKEN)
+        repo = g.get_repo(REPO_NAME)
+
+        # 既存ファイルの sha を取得
         try:
-            GITHUB_TOKEN = st.secrets["GITHUB_TOKEN"]
-            REPO_NAME = "kaa266/baseball-app"
-   # ←自分のリポジトリ名
-            FILE_PATH = f"data/{pitcher_name}.csv"
+            contents = repo.get_contents(FILE_PATH)
+            sha = contents.sha
+        except Exception:
+            sha = None  # ファイルが存在しない場合は None
 
-            g = Github(GITHUB_TOKEN)
-            repo = g.get_repo(REPO_NAME)
+        # CSV を文字列化
+        from io import StringIO
+        csv_buffer = StringIO()
+        df.to_csv(csv_buffer, index=False, encoding="utf-8-sig")
+        csv_content = csv_buffer.getvalue()
 
-            try:
-                contents = repo.get_contents(FILE_PATH)
-                sha = contents.sha
-            except:
-                sha = None
+        # GitHub に保存
+        if sha:
+            repo.update_file(
+                path=FILE_PATH,
+                message=f"Update data for {pitcher_name}",
+                content=csv_content,
+                sha=sha
+            )
+        else:
+            repo.create_file(
+                path=FILE_PATH,
+                message=f"Create data for {pitcher_name}",
+                content=csv_content
+            )
 
-            csv_buffer = StringIO()
-            df.to_csv(csv_buffer, index=False, encoding="utf-8-sig")
-            csv_content = csv_buffer.getvalue()
+        st.success(f"GitHubにも {pitcher_name}.csv を保存しました ✅")
 
-            if sha:
-                repo.update_file(path=FILE_PATH, message=f"Update data for {pitcher_name}", content=csv_content, sha=sha)
-            else:
-                repo.create_file(path=FILE_PATH, message=f"Create data for {pitcher_name}", content=csv_content)
+    except Exception as e:
+        st.error(f"GitHub保存に失敗しました: {e}")
 
-            st.info(f"GitHubにも {pitcher_name}.csv を保存しました")
-        except Exception as e:
-            st.warning(f"GitHub保存に失敗しました: {e}")
-
-        st.session_state["form_submitted"] = True
-        st.rerun()
+    # フォーム送信フラグと rerun は最後に必ず呼ぶ
+    st.session_state["form_submitted"] = True
+    st.rerun()
 
 
 
