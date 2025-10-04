@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import os
 import matplotlib.image as mpimg
 from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.utils import ImageReader
 from io import BytesIO
 
 plt.rcParams['font.family'] = 'DejaVu Sans'  # Matplotlib 標準英語フォント
@@ -13,38 +15,44 @@ plt.rcParams['font.family'] = 'DejaVu Sans'  # Matplotlib 標準英語フォン�
 
 DATA_DIR = "data"
 
-def create_pdf():
+# PDF作成関数
+def create_pdf(figures, title="投手分析レポート"):
     buffer = BytesIO()
-    c = canvas.Canvas(buffer)
-    c.drawString(100, 750, "これはテストPDFです。")
-    c.drawString(100, 730, "Streamlitでボタンから作成しました！")
-    c.showPage()
+    c = canvas.Canvas(buffer, pagesize=A4)
+    width, height = A4
+
+    # タイトル
+    c.setFont("Helvetica-Bold", 16)
+    c.drawString(100, height - 50, title)
+    c.setFont("Helvetica", 10)
+
+    y = height - 100
+    for fig in figures:
+        img_buffer = BytesIO()
+        fig.savefig(img_buffer, format="png", dpi=150, bbox_inches="tight")
+        img_buffer.seek(0)
+        # PDFに画像を貼る（BytesIO -> ImageReader を使う）
+        image = ImageReader(img_buffer)
+        c.drawImage(image, 50, y - 250, width=500, height=250)
+        y -= 300
+        if y < 100:
+            c.showPage()
+            y = height - 100
     c.save()
     buffer.seek(0)
     return buffer
-
-# ボタンを押したらPDFを生成
 
     
 
 def show_analysis(DATA_DIR):
 
-    
-# ボタンを押したらPDFを生成
-    if st.button("PDFを作る"):
-       pdf_buffer = create_pdf()
-    st.download_button(
-        label="📥 PDFをダウンロード",
-        data=pdf_buffer,
-        file_name="sample.pdf",
-        mime="application/pdf"
-    )
     pitcher_files = [f for f in os.listdir(DATA_DIR) if f.endswith(".csv")]
     if not pitcher_files:
         st.warning("No data found. Please input pitcher data first.")
         return
     
-
+     # --- PDF用にグラフを集めるリスト ---
+    figures = []
 
     
     # 1回だけ投手選択
@@ -122,7 +130,7 @@ def show_analysis(DATA_DIR):
     plt.legend(title="Pitch Type", bbox_to_anchor=(1.05, 1), loc='upper left')
     plt.tight_layout()
     st.pyplot(plt.gcf())
-
+    figures.append(plt.gcf())   # PDFに入れる
     # --- Heatmap ---
     st.title("📊 Heatmap (Pitcher Perspective)")
     if "打者左右" not in df.columns or "コース" not in df.columns:
@@ -159,6 +167,7 @@ def show_analysis(DATA_DIR):
         ax_r.set_title("Right-handed Batters")
         ax_r.invert_yaxis()
         st.pyplot(fig_r)
+        figures.append(fig_r)   # PDFに入れる
 
     with col2:
         st.subheader("Left-handed Batters")
@@ -170,7 +179,7 @@ def show_analysis(DATA_DIR):
         ax_l.set_title("Left-handed Batters")
         ax_l.invert_yaxis()
         st.pyplot(fig_l)
-
+        figures.append(fig_l)   # PDFに入れる
     # --- Batted Ball Direction Analysis ---
     st.title("🏟️ Batted Ball Direction Analysis")
 
@@ -240,10 +249,21 @@ def show_analysis(DATA_DIR):
          fig_r, ax_r = plt.subplots(figsize=(6,6))
          plot_direction(ax_r, df_r, "Right-handed")
          st.pyplot(fig_r)
-
+         figures.append(fig_r)   # PDFに入れる
     with col2:
          st.subheader("Left-handed Batter")
          df_l = df_exploded[df_exploded["打者左右"]=="左"]
          fig_l, ax_l = plt.subplots(figsize=(6,6))
          plot_direction(ax_l, df_l, "Left-handed")
          st.pyplot(fig_l)
+         figures.append(fig_l)   # PDFに入れる
+
+
+    if st.button("📄 PDFを作成する"):
+        pdf_buffer = create_pdf(figures, title=f"{selected_file.replace('.csv','')} 投手分析レポート")
+        st.download_button(
+            label="📥 PDFをダウンロード",
+            data=pdf_buffer,
+            file_name=f"{selected_file.replace('.csv','')}_analysis.pdf",
+            mime="application/pdf"
+        )     
