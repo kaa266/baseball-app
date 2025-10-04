@@ -6,6 +6,43 @@ from github import Github
 from io import StringIO
 
 DATA_DIR = "data"
+os.makedirs(DATA_DIR, exist_ok=True)
+
+def save_to_github(df, pitcher_name):
+  # ----------------------------
+        # GitHub 自動保存
+        # ----------------------------
+        try:
+            GITHUB_TOKEN = st.secrets["GITHUB_TOKEN"]
+            REPO_NAME = "kaa266/baseball-app"
+   # ←自分のリポジトリ名
+            FILE_PATH = f"data/{pitcher_name}.csv"
+
+            g = Github(GITHUB_TOKEN)
+            repo = g.get_repo(REPO_NAME)
+
+            try:
+                contents = repo.get_contents(FILE_PATH)
+                sha = contents.sha
+            except:
+                sha = None
+
+            csv_buffer = StringIO()
+            df.to_csv(csv_buffer, index=False, encoding="utf-8-sig")
+            csv_content = csv_buffer.getvalue()
+
+            if sha:
+                repo.update_file(path=FILE_PATH, message=f"Update data for {pitcher_name}", content=csv_content, sha=sha)
+            else:
+                repo.create_file(path=FILE_PATH, message=f"Create data for {pitcher_name}", content=csv_content)
+
+            st.info(f"GitHubにも {pitcher_name}.csv を保存しました")
+        except Exception as e:
+            st.warning(f"GitHub保存に失敗しました: {e}")
+
+        st.session_state["form_submitted"] = True
+        st.rerun()
+
 
 
 def show_input_form(DATA_DIR):
