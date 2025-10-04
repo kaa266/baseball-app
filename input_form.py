@@ -197,6 +197,12 @@ def show_input_form(DATA_DIR):
 
         st.success(f"{pitcher_name} のデータを保存しました ✅")
 
+        df_combined.to_csv(filepath, index=False, encoding="utf-8-sig")
+
+# 保存したデータをアプリ内で確認
+        st.subheader(f"{pitcher_name} の保存済みデータ")
+        st.dataframe(df_combined)  # 表形式で確認できる
+
         # 🔁 初期化のためフラグ立てて rerun
         st.session_state["form_submitted"] = True
         st.rerun()
