@@ -33,7 +33,7 @@ def create_pdf(figures, title="投手分析レポート"):
         img_buffer.seek(0)
         # PDFに画像を貼る（BytesIO -> ImageReader を使う）
         image = ImageReader(img_buffer)
-        c.drawImage(image, 70, y - 100, width=400, height=250)
+        c.drawImage(image, 70, y - 90, width=400, height=250)
         y -= 300
         if y < 100:
             c.showPage()
