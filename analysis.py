@@ -33,7 +33,7 @@ def create_pdf(figures, title="投手分析レポート"):
         img_buffer.seek(0)
         # PDFに画像を貼る（BytesIO -> ImageReader を使う）
         image = ImageReader(img_buffer)
-        c.drawImage(image, 50, y - 250, width=400, height=300)
+        c.drawImage(image, 50, y - 250, width=500, height=300)
         y -= 300
         if y < 100:
             c.showPage()
@@ -85,6 +85,7 @@ def show_analysis(DATA_DIR):
     ax.pie(pitch_counts, labels=pitch_counts.index, autopct="%1.1f%%", startangle=70)
     ax.axis("equal")
     st.pyplot(fig)
+    figures.append(fig)   # PDFに入れる
 
     # --- Count-based pitch percentage ---
     st.title("🎯 Count-based Pitch Percentage")
